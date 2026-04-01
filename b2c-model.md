@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Tour Planner's B2C model is a consumer travel planning and booking platform focused on cruise passengers, vacation travelers, families, and small groups. The consumer product combines itinerary capture, excursion discovery, collaborative planning, budget management, and AI-powered recommendations inside a single travel workspace. Revenue is driven primarily by excursion commissions, consumer trip planning subscriptions, premium AI features, affiliate revenue, and sponsored placements.
+Tour Planner's B2C model is a consumer travel planning and booking platform focused on cruise passengers, vacation travelers, families, and small groups. The consumer product combines itinerary capture, excursion discovery, collaborative planning, checklist management, budget management, and AI-powered recommendations inside a single travel workspace. Travelers can enter trip information in free-form text or import it from email content and Word or PDF documents so the platform can structure, enrich, and act on the trip data faster. The platform also delivers live schedule updates and increasingly relevant recommendations as departures, activities, and port days get closer. Revenue is driven primarily by excursion commissions, consumer trip planning subscriptions, premium AI features, affiliate revenue, and sponsored placements.
 
 ### Relationship to the Overall Platform
 
@@ -22,12 +22,15 @@ The B2C product combines several consumer-facing features:
 
 - **Shore Excursion Marketplace** - Curated excursion discovery and booking
 - **Trip Intake Engine** - Structured collection of flight, cruise, hotel, and car details
+- **Free-Form and Document Intake** - Accept trip data from free-form text and imported email, Word, and PDF content
 - **Collaborative Trip Planning** - Real-time shared itinerary building with conflict detection
+- **Trip Checklist Management** - Shared pre-trip and in-trip checklist tracking for tasks, documents, and reminders
 - **Shareable Itineraries** - Share with friends and family using view-only or edit permissions
 - **AI-Powered Itinerary Assistant** - AgentCore integration for smart scheduling and recommendations
 - **Budget & Cost Management** - Real-time expense tracking with cost optimization recommendations
 - **Affiliate Integrations** - Dining reservations and shopping commission networks
 - **Live Schedule Updates** - Real-time synchronization with cruise and flight schedules
+- **Closer-to-Trip Recommendations** - Dynamic recommendations that improve as events, departures, and port windows approach
 
 ### Target Customers
 
@@ -71,7 +74,9 @@ The B2C product combines several consumer-facing features:
 - 1 free trip plan
 - Up to 3 travelers
 - Basic itinerary builder
+- Free-form trip entry and basic document upload/import support
 - Excursion booking capabilities
+- Trip checklist tracking
 - Share itineraries with view-only access to 5 contacts
 - Real-time notifications for changes made by collaborators
 
@@ -81,9 +86,12 @@ The B2C product combines several consumer-facing features:
 - Up to 10 travelers
 - **Full sharing capabilities:** Share with up to 25 contacts with editable or view-only roles
 - Real-time collaborative editing with change notifications
+- AI-assisted parsing of free-form trip notes plus imported email, Word, and PDF content
 - Smart scheduling with conflict detection
 - Destination-specific recommendations
 - Schedule optimization
+- Live updates and recommendations as departure dates get closer
+- Shared trip checklist management
 - Shareable public link (with unique token) for easy distribution
 
 #### Group Planner
@@ -93,6 +101,7 @@ The B2C product combines several consumer-facing features:
 - Collaborative editing with role management (editor, viewer, voter)
 - Activity voting and group consensus
 - Expense splitting and cost allocation
+- Shared checklist assignment and trip-readiness tracking
 - Integrated group chat with @mentions
 - Automatic invitation system with email notifications
 
@@ -124,10 +133,13 @@ This model encourages viral adoption (users invite friends via shareable links) 
 #### AI Trip Concierge
 **Price:** $5–$10 per trip
 - Automatic itinerary generation from trip details
+- AI structuring of free-form text and imported email, Word, and PDF trip content
 - Real-time schedule conflict detection
 - Weather alerts and port-specific guidance
 - Cruise timing optimization
 - Restaurant recommendation engine
+- Live recommendations that adapt as the trip timeline gets closer
+- Checklist suggestions tied to trip stage and destination context
 - Automatic schedule reshuffling for changes
 
 #### Premium AI Planning

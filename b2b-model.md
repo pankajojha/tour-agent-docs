@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Tour Planner's B2B model targets corporate event coordinators, travel management companies, group organizers, cruise group operators, and enterprise hospitality partners that need structured travel coordination at scale. The B2B product is built around shareable itineraries, role-based administration, approval workflows, group booking operations, and analytics. Revenue is driven by SaaS subscriptions, coordinator seat licenses, group-trip platform fees, vendor tooling, premium integrations, and enterprise service agreements.
+Tour Planner's B2B model targets corporate event coordinators, travel management companies, group organizers, cruise group operators, and enterprise hospitality partners that need structured travel coordination at scale. The B2B product is built around shareable itineraries, role-based administration, approval workflows, group booking operations, checklist management, and analytics. It includes the same AI planning intelligence used in the consumer product, including the ability to structure travel data entered as free-form text or imported from email content and Word or PDF documents. Coordinators and travelers also receive live schedule updates and more relevant recommendations as each event, departure, and itinerary milestone gets closer. Revenue is driven by SaaS subscriptions, coordinator seat licenses, group-trip platform fees, vendor tooling, premium integrations, and enterprise service agreements.
 
 ### Relationship to the Overall Platform
 
@@ -21,12 +21,15 @@ The B2B business is the managed-travel and enterprise monetization layer of the 
 The B2B platform combines travel coordination and operational management features:
 
 - **Coordinator-Controlled Itineraries** - Centralized itinerary creation for large groups and managed travel programs
+- **Free-Form and Document Intake** - Import and structure travel requests from free-form text, email, Word, and PDF sources
 - **Role-Based Access Control** - Coordinator, manager, participant, finance approver, and view-only roles
 - **Shareable Itineraries** - Controlled sharing across teams, departments, clients, and travelers
 - **Approval Workflows** - Booking, budget, and itinerary changes routed through approval chains
 - **Group Excursion Booking** - Aggregated booking workflows for excursions and activities
+- **Trip Checklist Management** - Coordinator-managed checklists for traveler readiness, required documents, and operational tasks
 - **Budget & Cost Governance** - Shared budget tracking, approvals, and optimization insights
 - **AI Planning Assistant** - AgentCore-driven planning recommendations and schedule optimization
+- **Live Travel Updates** - Continuous schedule updates and recommendation refreshes as trips and events approach
 - **Audit Logs & Compliance** - Activity tracking for changes, approvals, and cost decisions
 - **Vendor Management Tools** - Inventory, pricing, capacity, and reporting for suppliers
 - **Enterprise Integrations** - Connectivity with travel, procurement, CRM, and finance systems
@@ -51,6 +54,8 @@ The B2B platform combines travel coordination and operational management feature
 - 3-10 coordinator seats
 - Up to 20 active trips
 - Role-based itinerary management
+- AI-assisted trip structuring from free-form text and imported email, Word, and PDF content
+- Shared checklist tracking for coordinators and travelers
 - Shared traveler portal
 - Standard reporting and exports
 
@@ -58,7 +63,10 @@ The B2B platform combines travel coordination and operational management feature
 **Price:** $1,000-$2,500/month
 - 10-50 coordinator seats
 - Unlimited active trips
+- AI planning assistance and schedule optimization across managed trips
+- Live updates and time-sensitive recommendations as itineraries get closer
 - Approval workflows and budget governance
+- Checklist oversight for trip readiness and task completion
 - Advanced reporting
 - Vendor coordination tools
 - Branded traveler experience
@@ -66,8 +74,10 @@ The B2B platform combines travel coordination and operational management feature
 #### Enterprise Plan
 **Price:** $3,000-$10,000+/month
 - Unlimited seats
+- AI-assisted planning across enterprise travel programs
 - SSO, audit logs, API access, and white-label options
 - Custom workflows and data retention controls
+- Enterprise checklist and readiness workflows
 - Dedicated onboarding and success support
 - Procurement and travel-system integrations
 
