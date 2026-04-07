@@ -4,6 +4,8 @@
 
 Tour Planner's B2C model is a consumer travel planning and booking platform focused on cruise passengers, vacation travelers, families, and small groups. The consumer product combines itinerary capture, excursion discovery, collaborative planning, checklist management, budget management, and AI-powered recommendations inside a single travel workspace. Travelers can enter trip information in free-form text or import it from email content and Word or PDF documents so the platform can structure, enrich, and act on the trip data faster. The platform also delivers live schedule updates and increasingly relevant recommendations as departures, activities, and port days get closer. Revenue is driven primarily by excursion commissions, consumer trip planning subscriptions, premium AI features, affiliate revenue, and sponsored placements.
 
+Consumer trust is also a core part of the B2C model. The intended product posture is that raw PII, PCI, and other sensitive travel content are not sent directly to the AI backend. Instead, copied itinerary text and uploaded travel documents are intended to be sanitized and reduced to privacy-safe planning context before AI-based structuring, summarization, or recommendation workflows run.
+
 ### Relationship to the Overall Platform
 
 The B2C business is the self-serve demand engine for the overall Tour Planner platform. It brings travelers into the ecosystem through direct trip planning, booking, and sharing. The B2B business extends the same core platform into managed travel use cases where coordinators, agencies, and enterprise operators organize trips on behalf of larger groups. In practice:
@@ -31,6 +33,28 @@ The B2C product combines several consumer-facing features:
 - **Affiliate Integrations** - Dining reservations and shopping commission networks
 - **Live Schedule Updates** - Real-time synchronization with cruise and flight schedules
 - **Closer-to-Trip Recommendations** - Dynamic recommendations that improve as events, departures, and port windows approach
+- **Privacy-Conscious AI Processing** - Sensitive data is intended to be removed or excluded before AI assistance is invoked
+
+### Privacy, Compliance, and AI Guardrails
+
+For the B2C product, trust is directly tied to conversion, repeat usage, and sharing behavior. Consumers need to believe that the platform can help organize trips without turning raw personal or payment details into generic AI prompt material. The product direction therefore centers on several privacy and AI guardrail principles:
+
+- Raw personal data such as names, email addresses, phone numbers, passport details, and other direct identifiers are intended to stay out of general AI prompts.
+- Payment card data, billing details, and PCI-sensitive information are intended to remain outside the AI layer entirely.
+- Uploaded booking confirmations, copied itineraries, and travel notes are intended to go through sanitization before AI summarization, itinerary generation, or recommendation workflows.
+- The AI layer is intended to operate on privacy-safe itinerary structure, timing, destination context, generalized booking metadata, and other minimum-necessary travel facts.
+- Sensitive transactional and identity-heavy workflows remain in controlled product and platform paths rather than being delegated to open-ended AI processing.
+
+This privacy posture supports consumer confidence while also creating a cleaner compliance story as the platform matures. It aligns with privacy-by-design thinking, GDPR-conscious handling of personal data, and ISO 27001-style control expectations for the broader operating environment.
+
+Planned production guardrails for the AI agent solution include:
+
+- server-enforced sanitization before AI invocation
+- formal sensitive-data classifiers and prompt deny rules
+- audit logging for AI-bound payloads and summaries
+- role-aware itinerary sharing controls
+- retention and deletion workflows for uploaded travel documents
+- production hardening of AI integrations before sensitive workflows are scaled
 
 ### Target Customers
 
@@ -75,6 +99,7 @@ The B2C product combines several consumer-facing features:
 - Up to 3 travelers
 - Basic itinerary builder
 - Free-form trip entry and basic document upload/import support
+- Privacy-conscious AI boundary messaging and sanitized itinerary handling posture
 - Excursion booking capabilities
 - Trip checklist tracking
 - Share itineraries with view-only access to 5 contacts
@@ -87,6 +112,7 @@ The B2C product combines several consumer-facing features:
 - **Full sharing capabilities:** Share with up to 25 contacts with editable or view-only roles
 - Real-time collaborative editing with change notifications
 - AI-assisted parsing of free-form trip notes plus imported email, Word, and PDF content
+- AI workflows intended to run only on sanitized, privacy-safe travel context
 - Smart scheduling with conflict detection
 - Destination-specific recommendations
 - Schedule optimization
@@ -104,6 +130,7 @@ The B2C product combines several consumer-facing features:
 - Shared checklist assignment and trip-readiness tracking
 - Integrated group chat with @mentions
 - Automatic invitation system with email notifications
+- Clear AI-sensitive-data boundary for shared itinerary collaboration
 
 #### Extended Group Planner
 **Price:** $75-$150 per trip
@@ -155,6 +182,7 @@ This model encourages viral adoption (users invite friends via shareable links) 
 - Powered by AgentCore AI agents
 - Real-time integration with trip intake data
 - Access to live inventory and pricing data
+- Planned sensitive-data sanitization and privacy guardrails before AI processing
 
 **Projected Revenue Contribution:** 5–10% of total revenue
 

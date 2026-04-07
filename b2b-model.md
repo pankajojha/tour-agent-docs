@@ -4,6 +4,8 @@
 
 Tour Planner's B2B model targets corporate event coordinators, travel management companies, group organizers, cruise group operators, and enterprise hospitality partners that need structured travel coordination at scale. The B2B product is built around shareable itineraries, role-based administration, approval workflows, group booking operations, checklist management, and analytics. It includes the same AI planning intelligence used in the consumer product, including the ability to structure travel data entered as free-form text or imported from email content and Word or PDF documents. Coordinators and travelers also receive live schedule updates and more relevant recommendations as each event, departure, and itinerary milestone gets closer. Revenue is driven by SaaS subscriptions, coordinator seat licenses, group-trip platform fees, vendor tooling, premium integrations, and enterprise service agreements.
 
+Privacy and AI data protection are also part of the B2B positioning. The intended product posture is that raw PII, PCI, and other sensitive booking content are not sent directly to the AI backend. Uploaded or copied itinerary material is intended to be sanitized, obfuscated, or reduced to privacy-safe planning context before any AI-driven structuring, summarization, or recommendation workflow is executed.
+
 ### Relationship to the Overall Platform
 
 The B2B business is the managed-travel and enterprise monetization layer of the overall Tour Planner platform. It uses the same trip, booking, collaboration, and AI infrastructure as the B2C product, but packages it for coordinators and organizations that operate at higher scale and with stricter governance requirements. In practice:
@@ -33,6 +35,28 @@ The B2B platform combines travel coordination and operational management feature
 - **Audit Logs & Compliance** - Activity tracking for changes, approvals, and cost decisions
 - **Vendor Management Tools** - Inventory, pricing, capacity, and reporting for suppliers
 - **Enterprise Integrations** - Connectivity with travel, procurement, CRM, and finance systems
+- **Privacy-Conscious AI Data Boundary** - Sensitive data is intended to be excluded or sanitized before AI processing
+
+### Privacy, Compliance, and AI Guardrails
+
+For B2B customers, privacy and control expectations are adoption requirements. The managed-travel version of Tour Planner is therefore positioned around a clear AI data boundary:
+
+- Raw personal data such as names, email addresses, phone numbers, passport details, and other direct identifiers are intended to stay out of general AI prompts.
+- Payment card data, billing details, and PCI-regulated information are intended to remain outside the AI layer entirely.
+- Uploaded travel documents, copied itineraries, and booking confirmations are intended to go through sanitization and structuring steps before AI summarization or recommendation workflows.
+- The AI layer is intended to operate on minimum-necessary, privacy-safe travel context such as itinerary structure, destination, timing, generalized booking metadata, and traveler counts.
+- Sensitive transactional systems remain the source of truth for booking state, payment state, and identity-sensitive workflows.
+
+This direction supports enterprise conversations around GDPR-conscious processing boundaries, privacy-by-design expectations, and ISO 27001-style operating controls. It also strengthens the platform's enterprise positioning by giving buyers a concrete answer to how AI is constrained around sensitive travel data.
+
+Planned production guardrails for the AI agent solution include:
+
+- server-enforced sanitization before AI invocation
+- formal sensitive-data classifiers and deny rules for prompts
+- centralized audit logging for AI-bound payloads
+- role-based access controls for itinerary review and sharing
+- retention and deletion workflows for uploaded travel documents
+- production security review of AI integrations and data flows
 
 ### Target Customers
 
@@ -55,6 +79,7 @@ The B2B platform combines travel coordination and operational management feature
 - Up to 20 active trips
 - Role-based itinerary management
 - AI-assisted trip structuring from free-form text and imported email, Word, and PDF content
+- Privacy-conscious AI handling posture with sensitive-data sanitization before planning workflows
 - Shared checklist tracking for coordinators and travelers
 - Shared traveler portal
 - Standard reporting and exports
@@ -66,6 +91,7 @@ The B2B platform combines travel coordination and operational management feature
 - AI planning assistance and schedule optimization across managed trips
 - Live updates and time-sensitive recommendations as itineraries get closer
 - Approval workflows and budget governance
+- Stronger privacy and governance posture for AI-assisted itinerary handling
 - Checklist oversight for trip readiness and task completion
 - Advanced reporting
 - Vendor coordination tools
@@ -77,6 +103,7 @@ The B2B platform combines travel coordination and operational management feature
 - AI-assisted planning across enterprise travel programs
 - SSO, audit logs, API access, and white-label options
 - Custom workflows and data retention controls
+- AI guardrail alignment with enterprise privacy and security expectations
 - Enterprise checklist and readiness workflows
 - Dedicated onboarding and success support
 - Procurement and travel-system integrations
@@ -171,6 +198,7 @@ The B2B platform combines travel coordination and operational management feature
 - Compliance reporting and audit exports
 - Supplier performance scorecards
 - AI optimization insights for cost and schedule efficiency
+- AI data-boundary reporting and privacy-control visibility for enterprise customers
 
 **Pricing:**
 - Analytics add-on: $500-$1,500/month
