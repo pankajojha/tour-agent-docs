@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Tour Planner's B2B model targets corporate event coordinators, travel management companies, group organizers, cruise group operators, and enterprise hospitality partners that need structured travel coordination at scale. The B2B product is built around shareable itineraries, role-based administration, approval workflows, group booking operations, checklist management, and analytics. It includes the same AI planning intelligence used in the consumer product, including the ability to structure travel data entered as free-form text or imported from email content and Word or PDF documents. Coordinators and travelers also receive live schedule updates and more relevant recommendations as each event, departure, and itinerary milestone gets closer. Revenue is driven by SaaS subscriptions, coordinator seat licenses, group-trip platform fees, vendor tooling, premium integrations, and enterprise service agreements.
+Tour Planner's B2B model targets corporate event coordinators, travel management companies, group organizers, cruise group operators, and enterprise hospitality partners that need structured travel coordination at scale. The B2B product is built around shareable itineraries, role-based administration, approval workflows, group booking operations, checklist management, and analytics. It includes the same AI planning intelligence used in the consumer product, including the ability to structure travel data entered as free-form text or imported from email content and Word or PDF documents. Coordinators and travelers also receive live schedule updates and more relevant recommendations as each event, departure, and itinerary milestone gets closer. Shared itinerary collaboration now supports category-level owner controls: coordinator-owned source entries remain protected from collaborator edits, while invited participants can add their own category contributions to the same trip payload for downstream planning and approvals. Revenue is driven by SaaS subscriptions, coordinator seat licenses, group-trip platform fees, vendor tooling, premium integrations, and enterprise service agreements.
 
 Privacy and AI data protection are also part of the B2B positioning. The intended product posture is that raw PII, PCI, and other sensitive booking content are not sent directly to the AI backend. Uploaded or copied itinerary material is intended to be sanitized, obfuscated, or reduced to privacy-safe planning context before any AI-driven structuring, summarization, or recommendation workflow is executed.
 
@@ -26,6 +26,8 @@ The B2B platform combines travel coordination and operational management feature
 - **Free-Form and Document Intake** - Import and structure travel requests from free-form text, email, Word, and PDF sources
 - **Role-Based Access Control** - Coordinator, manager, participant, finance approver, and view-only roles
 - **Shareable Itineraries** - Controlled sharing across teams, departments, clients, and travelers
+- **Owner-Locked Category Control** - Original owner or coordinator entries are read-only for shared participants
+- **Multi-Contributor Category Inputs** - Participants can append their own category-level itinerary content without mutating owner entries
 - **Approval Workflows** - Booking, budget, and itinerary changes routed through approval chains
 - **Group Excursion Booking** - Aggregated booking workflows for excursions and activities
 - **Trip Checklist Management** - Coordinator-managed checklists for traveler readiness, required documents, and operational tasks
@@ -47,7 +49,7 @@ For B2B customers, privacy and control expectations are adoption requirements. T
 - The AI layer is intended to operate on minimum-necessary, privacy-safe travel context such as itinerary structure, destination, timing, generalized booking metadata, and traveler counts.
 - Sensitive transactional systems remain the source of truth for booking state, payment state, and identity-sensitive workflows.
 
-This direction supports enterprise conversations around GDPR-conscious processing boundaries, privacy-by-design expectations, and ISO 27001-style operating controls. It also strengthens the platform's enterprise positioning by giving buyers a concrete answer to how AI is constrained around sensitive travel data.
+This direction supports enterprise conversations around GDPR-conscious processing boundaries, privacy-by-design expectations, and ISO 27001-style operating controls. It also strengthens the platform's enterprise positioning by giving buyers a concrete answer to how AI is constrained around sensitive travel data and how collaboration permissions protect source itinerary ownership while still supporting multi-party input.
 
 Planned production guardrails for the AI agent solution include:
 
@@ -78,6 +80,8 @@ Planned production guardrails for the AI agent solution include:
 - 3-10 coordinator seats
 - Up to 20 active trips
 - Role-based itinerary management
+- Owner-protected category source records
+- Participant contribution entries in shared category payloads
 - AI-assisted trip structuring from free-form text and imported email, Word, and PDF content
 - Privacy-conscious AI handling posture with sensitive-data sanitization before planning workflows
 - Shared checklist tracking for coordinators and travelers
