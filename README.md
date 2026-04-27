@@ -22,6 +22,7 @@ This README governs:
 
 ## Authoritative Flow
 
+**Primary Flow (User/Trip Data):**
 1. User actions start in `tour-planner-ui`.
 2. UI calls `tour-agent/services` (entry point for all client traffic).
 3. Services sanitize and tokenize sensitive data before any AI call.
@@ -31,12 +32,25 @@ This README governs:
 7. Services rehydrate as needed from token vault mappings and persist output in DB.
 8. Services emit results to UI or callback pipelines.
 
+**Agentic Data Flow (Agent State/Execution Context):**
+1. Agentic runtime and services in `tour-planner-ai/tourplannerai-api` directly access agentic-scoped DB tables.
+2. Direct access uses restricted IAM credentials (agentic tables only).
+3. RLS ensures agent→trip ownership boundaries.
+4. Agentic outputs (reasoning, state, context) are persisted as immutable agentic records.
+5. Correlation IDs link agentic records to user/trip records for audit and reproducibility.
+
 ## Hard Boundary Rules
 
-- AgentCore never accesses the database directly.
-- All DB reads and writes are handled by `tour-agent/services` only.
+**Data Access Patterns:**
+- **Agentic entries** (agent state, execution context, reasoning logs): direct access via Agentic Service to agentic-scoped DB tables.
+- **User/trip data** (bookings, preferences, itineraries): all reads/writes via `tour-agent/services` only (gateway-mediated).
+- Agentic Service assumes restricted IAM role with permissions scoped to agentic tables only.
+- Row-level security (RLS) enforces agent→trip ownership associations in agentic tables.
+
+**Data Handling:**
 - AI layer receives IDs and tokenized values, not raw PII or PCI.
-- Services are responsible for stitching final response objects for client and storage needs.
+- Services (both gateway and agentic) are responsible for tokenization/detokenization and final response stitching.
+- Sensitive data vault lookups remain trip-scoped and application-controlled.
 
 ## API Versioning And Rollout
 
