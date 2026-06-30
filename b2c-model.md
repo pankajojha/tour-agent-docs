@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Tour Planner's B2C model is a consumer travel planning and booking platform focused on cruise passengers, vacation travelers, families, and small groups. The consumer product combines itinerary capture, excursion discovery, collaborative planning, checklist management, budget management, and AI-powered recommendations inside a single travel workspace. Travelers can enter trip information in free-form text or import it from email content and Word or PDF documents so the platform can structure, enrich, and act on the trip data faster. The platform also delivers live schedule updates and increasingly relevant recommendations as departures, activities, and port days get closer. Collaboration now follows an owner-locked model at the category level: the trip owner's original flight, cruise, hotel, car, excursions, budget, and notes entries remain protected from collaborator edits, while the owner retains full write access to their own sections even after the trip has been shared. Shared travelers can add their own parallel contributions into the same itinerary payload. Each traveler may only have one active trip plan at a time; a previous plan must be finalized or closed before a new one can be created. Every trip must have an end date set before it can leave draft status; flight, cruise, hotel, and car entries are also validated to fall within the trip's declared date window. Revenue is driven primarily by excursion commissions, consumer trip planning subscriptions, premium AI features, affiliate revenue, and sponsored placements.
+Tour Planner's B2C model is a consumer travel planning and booking platform focused on cruise passengers, vacation travelers, families, and small groups. The consumer product combines itinerary capture, excursion discovery, collaborative planning, checklist management, budget management, and AI-powered recommendations inside a single travel workspace. Travelers can enter trip information in free-form text or import it from email content and Word or PDF documents so the platform can structure, enrich, and act on the trip data faster. The platform also delivers live schedule updates and increasingly relevant recommendations as departures, activities, and port days get closer. Collaboration now follows an owner-locked model at the category level: the trip owner's original flight, cruise, hotel, car, excursions, budget, and notes entries remain protected from collaborator edits, while the owner retains full write access to their own sections even after the trip has been shared. Shared travelers can add their own parallel contributions into the same itinerary payload. Product access is authenticated-only for trip planning and purchase flows. Each traveler may use up to 2 free trips over account lifetime, and may hold up to 2 open non-consumed trips concurrently. Every trip must have an end date set before it can leave draft status; flight, cruise, hotel, and car entries are also validated to fall within the trip's declared date window. Revenue is driven primarily by excursion commissions, consumer trip planning subscriptions, premium AI features, affiliate revenue, and sponsored placements.
 
 Consumer trust is also a core part of the B2C model. The intended product posture is that raw PII, PCI, and other sensitive travel content are not sent directly to the AI backend. Instead, copied itinerary text and uploaded travel documents are intended to be sanitized and reduced to privacy-safe planning context before AI-based structuring, summarization, or recommendation workflows run.
 
@@ -29,7 +29,8 @@ The B2C product combines several consumer-facing features:
 - **Owner-Locked Category Collaboration** - Shared travelers can view owner-authored entries but cannot overwrite them; the trip owner retains write access to their own sections in all shared states
 - **Shared Contributor Entries** - Non-owner collaborators can add their own category entries to the same shared itinerary payload
 - **Mandatory Trip Date Window** - Every trip must have an end date before it can be activated; flight, cruise, hotel, and car section entries are validated to fall within the declared trip date window
-- **One Trip Per Planner** - Each user may only have one active trip plan at a time; a prior plan must be finalized or consumed before a new one is created
+- **Free-Tier And Open-Trip Controls** - Each user may use up to 2 free trips over account lifetime and may hold up to 2 open non-consumed trips concurrently
+- **Authenticated Product Access** - Trip-planning and purchase routes require signed-in users
 - **Trip Checklist Management** - Shared pre-trip and in-trip checklist tracking for tasks, documents, and reminders
 - **Shareable Itineraries** - Share with friends and family using view-only or edit permissions
 - **AI-Powered Itinerary Assistant** - AgentCore integration for smart scheduling and recommendations
@@ -99,7 +100,7 @@ Planned production guardrails for the AI agent solution include:
 **Model:** Tiered subscription pricing based on trip complexity and collaborators
 
 #### Free Tier
-- 1 free trip plan
+- 2 free trip plans (lifetime allowance)
 - Up to 3 travelers
 - Basic itinerary builder
 - Free-form trip entry and basic document upload/import support
@@ -108,6 +109,7 @@ Planned production guardrails for the AI agent solution include:
 - Trip checklist tracking
 - Share itineraries with view-only access to 5 contacts
 - Real-time notifications for changes made by collaborators
+- After free-tier exhaustion, users are routed to plan-selection and billing setup flows before additional trip creation
 
 #### Pro Trip Planner
 **Price:** $8–$15 per trip

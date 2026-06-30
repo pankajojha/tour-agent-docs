@@ -177,3 +177,20 @@ All future feature work must preserve this sequence:
 3. capture metadata-rich immutable outputs
 4. enforce scope-aware access and soft-delete semantics
 5. maintain end-to-end correlation and auditable history
+
+## Current Product Access And Monetization Controls (June 2026)
+
+The currently implemented product behavior includes the following controls:
+
+- Auth-required product access: trip planning, plan selection, billing setup, and purchase routes are blocked for anonymous users and redirect to login.
+- Post-login route restore: users redirected to login from a protected route are returned to their original route after successful authentication.
+- Free-tier lifetime cap: each user can create at most 2 free trips over account lifetime.
+- Open-trip concurrency cap: each user can hold at most 2 non-consumed open trips at a time.
+- Plan-routing on free-limit exhaustion: when free trips are exhausted, the UI routes users to a dedicated plan-selection page.
+- Auth-aware plan UX: authenticated users are guided to account upgrade and billing; anonymous users are guided to login or signup first.
+- Stripe test pilot billing: plan billing uses a Stripe-hosted test payment link in UI pilot mode.
+
+Notes:
+
+- The Stripe pilot flow currently validates hosted checkout UX but does not yet complete backend webhook-driven entitlement activation.
+- Existing strategy and architecture rules in this document remain in effect unless superseded by migration-backed implementation changes.
