@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Tour Planner's B2B model targets corporate event coordinators, travel management companies, group organizers, cruise group operators, and enterprise hospitality partners that need structured travel coordination at scale. The B2B product is built around shareable itineraries, role-based administration, approval workflows, group booking operations, checklist management, and analytics. It includes the same AI planning intelligence used in the consumer product, including the ability to structure travel data entered as free-form text or imported from email content and Word or PDF documents. Coordinators and travelers also receive live schedule updates and more relevant recommendations as each event, departure, and itinerary milestone gets closer. Shared itinerary collaboration now supports category-level owner controls: coordinator-owned source entries remain protected from collaborator edits, while coordinators retain full write access to their own sections even after the trip has been shared with participants. Invited participants can add their own category contributions to the same trip payload for downstream planning and approvals. Product access is authenticated-only for trip planning and purchase flows. Each coordinator or user may use up to 2 free trips over account lifetime and may hold up to 2 open non-consumed trips concurrently. Every trip must have an end date set before it can be activated; flight, cruise, hotel, and car section entries are also validated to fall within the trip's declared date window. Revenue is driven by SaaS subscriptions, coordinator seat licenses, group-trip platform fees, vendor tooling, premium integrations, and enterprise service agreements.
+Tour Planner's B2B model targets corporate event coordinators, travel management companies, group organizers, cruise group operators, and enterprise hospitality partners that need structured travel coordination at scale. The B2B product is built around shareable itineraries, role-based administration, approval workflows, group booking operations, checklist management, and analytics. It includes the same AI planning intelligence used in the consumer product, including the ability to structure travel data entered as free-form text or imported from txt or PDF documents. Coordinators and travelers also receive live schedule updates and more relevant recommendations as each event, departure, and itinerary milestone gets closer. Shared itinerary collaboration now supports category-level owner controls: coordinator-owned source entries remain protected from collaborator edits, while coordinators retain full write access to their own sections even after the trip has been shared with participants. Invited participants can add their own category contributions to the same trip payload for downstream planning and approvals. Product access is authenticated-only for trip planning and purchase flows. Each coordinator or user may use up to 2 free trips over account lifetime and may hold up to 2 open non-consumed trips concurrently. Every trip must have an end date set before it can be activated; flight, cruise, hotel, and car section entries are also validated to fall within the trip's declared date window. Revenue is driven by SaaS subscriptions, coordinator seat licenses, group-trip platform fees, vendor tooling, premium integrations, and enterprise service agreements.
 
 Privacy and AI data protection are also part of the B2B positioning. The intended product posture is that raw PII, PCI, and other sensitive booking content are not sent directly to the AI backend. Uploaded or copied itinerary material is intended to be sanitized, obfuscated, or reduced to privacy-safe planning context before any AI-driven structuring, summarization, or recommendation workflow is executed.
 
@@ -23,7 +23,7 @@ The B2B business is the managed-travel and enterprise monetization layer of the 
 The B2B platform combines travel coordination and operational management features:
 
 - **Coordinator-Controlled Itineraries** - Centralized itinerary creation for large groups and managed travel programs
-- **Free-Form and Document Intake** - Import and structure travel requests from free-form text, email, Word, and PDF sources
+- **Free-Form and Document Intake** - Import and structure travel requests from free-form text and txt or PDF sources
 - **Role-Based Access Control** - Coordinator, manager, participant, finance approver, and view-only roles
 - **Shareable Itineraries** - Controlled sharing across teams, departments, clients, and travelers
 - **Owner-Locked Category Control** - Original owner or coordinator entries are read-only for shared participants; coordinators retain write access to their own sections while a trip is shared
@@ -31,13 +31,13 @@ The B2B platform combines travel coordination and operational management feature
 - **Mandatory Trip Date Window** - Every trip must have an end date before it can be activated; flight, cruise, hotel, and car entries are validated to fall within the trip's declared date window
 - **Free-Tier And Open-Trip Controls** - Each coordinator or user may use up to 2 free trips over account lifetime and may hold up to 2 open non-consumed trips concurrently
 - **Authenticated Product Access** - Managed-trip and purchase routes require signed-in users
-- **Approval Workflows** - Booking, budget, and itinerary changes routed through approval chains
+- **Approval Workflows** - Roadmap capability; currently represented by lifecycle transition controls and operation rules
 - **Group Excursion Booking** - Aggregated booking workflows for excursions and activities
 - **Trip Checklist Management** - Coordinator-managed checklists for traveler readiness, required documents, and operational tasks
 - **Budget & Cost Governance** - Shared budget tracking, approvals, and optimization insights
 - **AI Planning Assistant** - AgentCore-driven planning recommendations and schedule optimization
 - **Live Travel Updates** - Continuous schedule updates and recommendation refreshes as trips and events approach
-- **Audit Logs & Compliance** - Activity tracking for changes, approvals, and cost decisions
+- **Audit Logs & Compliance** - Lifecycle status transitions are logged today; broader enterprise audit modules are roadmap
 - **Vendor Management Tools** - Inventory, pricing, capacity, and reporting for suppliers
 - **Enterprise Integrations** - Connectivity with travel, procurement, CRM, and finance systems
 - **Privacy-Conscious AI Data Boundary** - Sensitive data is intended to be excluded or sanitized before AI processing
@@ -85,7 +85,7 @@ Planned production guardrails for the AI agent solution include:
 - Role-based itinerary management
 - Owner-protected category source records
 - Participant contribution entries in shared category payloads
-- AI-assisted trip structuring from free-form text and imported email, Word, and PDF content
+- AI-assisted trip structuring from free-form text and imported txt and PDF content
 - Privacy-conscious AI handling posture with sensitive-data sanitization before planning workflows
 - Shared checklist tracking for coordinators and travelers
 - Shared traveler portal
@@ -108,7 +108,7 @@ Planned production guardrails for the AI agent solution include:
 **Price:** $3,000-$10,000+/month
 - Unlimited seats
 - AI-assisted planning across enterprise travel programs
-- SSO, audit logs, API access, and white-label options
+- SSO and white-label options are roadmap; API access and lifecycle logs are currently available
 - Custom workflows and data retention controls
 - AI guardrail alignment with enterprise privacy and security expectations
 - Enterprise checklist and readiness workflows

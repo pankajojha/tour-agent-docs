@@ -81,9 +81,9 @@ This README governs:
 - Prompt-safe logging is mandatory:
 	- No pre-redacted payloads in logs, traces, or metrics.
 
-## Async Orchestration And Webhooks
+## Target Async Orchestration And Webhooks (Planned)
 
-- Orchestration mode: async with webhooks.
+- Target orchestration mode: async with webhooks (design target; not the default shipped UI flow).
 - Webhook callbacks must be HMAC-signed.
 - Replay protection is required with nonce tracking.
 - Signature freshness window: 15 minutes.
@@ -139,7 +139,7 @@ Owner manages the overall trip but category write rules are explicit:
 
 - Soft delete only. No hard delete.
 - Deleted entries are hidden by default.
-- UI should expose a `Show deleted` toggle.
+- Show deleted and restore UX is planned and not yet shipped in the current UI.
 - Only trip owner can restore deleted entries.
 
 ## Audit And Version History
@@ -189,6 +189,7 @@ The currently implemented product behavior includes the following controls:
 - Plan-routing on free-limit exhaustion: when free trips are exhausted, the UI routes users to a dedicated plan-selection page.
 - Auth-aware plan UX: authenticated users are guided to account upgrade and billing; anonymous users are guided to login or signup first.
 - Stripe test pilot billing: plan billing uses a Stripe-hosted test payment link in UI pilot mode.
+- Current billing page launches Stripe-hosted test checkout only; backend entitlement update via payment webhooks is not yet active.
 
 Notes:
 

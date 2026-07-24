@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Tour Planner's B2C model is a consumer travel planning and booking platform focused on cruise passengers, vacation travelers, families, and small groups. The consumer product combines itinerary capture, excursion discovery, collaborative planning, checklist management, budget management, and AI-powered recommendations inside a single travel workspace. Travelers can enter trip information in free-form text or import it from email content and Word or PDF documents so the platform can structure, enrich, and act on the trip data faster. The platform also delivers live schedule updates and increasingly relevant recommendations as departures, activities, and port days get closer. Collaboration now follows an owner-locked model at the category level: the trip owner's original flight, cruise, hotel, car, excursions, budget, and notes entries remain protected from collaborator edits, while the owner retains full write access to their own sections even after the trip has been shared. Shared travelers can add their own parallel contributions into the same itinerary payload. Product access is authenticated-only for trip planning and purchase flows. Each traveler may use up to 2 free trips over account lifetime, and may hold up to 2 open non-consumed trips concurrently. Every trip must have an end date set before it can leave draft status; flight, cruise, hotel, and car entries are also validated to fall within the trip's declared date window. Revenue is driven primarily by excursion commissions, consumer trip planning subscriptions, premium AI features, affiliate revenue, and sponsored placements.
+Tour Planner's B2C model is a consumer travel planning and booking platform focused on cruise passengers, vacation travelers, families, and small groups. The consumer product combines itinerary capture, excursion discovery, collaborative planning, checklist management, budget management, and AI-powered recommendations inside a single travel workspace. Travelers can enter trip information in free-form text or import it from txt or PDF documents so the platform can structure, enrich, and act on the trip data faster. The platform also delivers live schedule updates and increasingly relevant recommendations as departures, activities, and port days get closer. Collaboration now follows an owner-locked model at the category level: the trip owner's original flight, cruise, hotel, car, excursions, budget, and notes entries remain protected from collaborator edits, while the owner retains full write access to their own sections even after the trip has been shared. Shared travelers can add their own parallel contributions into the same itinerary payload. Product access is authenticated-only for trip planning and purchase flows. Each traveler may use up to 2 free trips over account lifetime, and may hold up to 2 open non-consumed trips concurrently. Every trip must have an end date set before it can leave draft status; flight, cruise, hotel, and car entries are also validated to fall within the trip's declared date window. Revenue is driven primarily by excursion commissions, consumer trip planning subscriptions, premium AI features, affiliate revenue, and sponsored placements.
 
 Consumer trust is also a core part of the B2C model. The intended product posture is that raw PII, PCI, and other sensitive travel content are not sent directly to the AI backend. Instead, copied itinerary text and uploaded travel documents are intended to be sanitized and reduced to privacy-safe planning context before AI-based structuring, summarization, or recommendation workflows run.
 
@@ -24,15 +24,15 @@ The B2C product combines several consumer-facing features:
 
 - **Shore Excursion Marketplace** - Curated excursion discovery and booking
 - **Trip Intake Engine** - Structured collection of flight, cruise, hotel, and car details
-- **Free-Form and Document Intake** - Accept trip data from free-form text and imported email, Word, and PDF content
-- **Collaborative Trip Planning** - Real-time shared itinerary building with conflict detection
+- **Free-Form and Document Intake** - Accept trip data from free-form text and imported txt and PDF content
+- **Collaborative Trip Planning** - Owner-locked shared intake with contributor entries and AI-assisted synthesis; automated conflict detection remains roadmap
 - **Owner-Locked Category Collaboration** - Shared travelers can view owner-authored entries but cannot overwrite them; the trip owner retains write access to their own sections in all shared states
 - **Shared Contributor Entries** - Non-owner collaborators can add their own category entries to the same shared itinerary payload
 - **Mandatory Trip Date Window** - Every trip must have an end date before it can be activated; flight, cruise, hotel, and car section entries are validated to fall within the declared trip date window
 - **Free-Tier And Open-Trip Controls** - Each user may use up to 2 free trips over account lifetime and may hold up to 2 open non-consumed trips concurrently
 - **Authenticated Product Access** - Trip-planning and purchase routes require signed-in users
 - **Trip Checklist Management** - Shared pre-trip and in-trip checklist tracking for tasks, documents, and reminders
-- **Shareable Itineraries** - Share with friends and family using view-only or edit permissions
+- **Shareable Itineraries** - Email-based itinerary sharing with owner-locked category rules; explicit viewer or editor role selection is roadmap
 - **AI-Powered Itinerary Assistant** - AgentCore integration for smart scheduling and recommendations
 - **Budget & Cost Management** - Real-time expense tracking with cost optimization recommendations
 - **Affiliate Integrations** - Dining reservations and shopping commission networks
@@ -120,7 +120,7 @@ Planned production guardrails for the AI agent solution include:
 - Owner-protected source itinerary sections with separate collaborator contribution blocks
 - Owner retains write access to their own category sections even after the trip is shared
 - Trip end date required before activating; flight, cruise, hotel, and car entries validated against trip date window
-- AI-assisted parsing of free-form trip notes plus imported email, Word, and PDF content
+- AI-assisted parsing of free-form trip notes plus imported txt and PDF content
 - AI workflows intended to run only on sanitized, privacy-safe travel context
 - Smart scheduling with conflict detection
 - Destination-specific recommendations
@@ -172,7 +172,7 @@ This model encourages viral adoption (users invite friends via shareable links) 
 #### AI Trip Concierge
 **Price:** $5–$10 per trip
 - Automatic itinerary generation from trip details
-- AI structuring of free-form text and imported email, Word, and PDF trip content
+- AI structuring of free-form text and imported txt and PDF trip content
 - Real-time schedule conflict detection
 - Weather alerts and port-specific guidance
 - Cruise timing optimization
