@@ -4,8 +4,8 @@
 
 This document is the commercial pitch version of Tour Planner's revenue model for investors, strategic partners, and corporations evaluating integration opportunities. Detailed feature and workflow definitions remain in the core model documents:
 
-- [b2c-model.md](b2c-model.md)
-- [b2b-model.md](b2b-model.md)
+- [b2c-model.md](../business-model/b2c-model.md)
+- [b2b-model.md](../business-model/b2b-model.md)
 
 This pitch document focuses on market opportunity, monetization logic, strategic value, and why Tour Planner is positioned to become the operating layer between travelers, coordinators, vendors, and enterprise travel workflows.
 
@@ -327,8 +327,8 @@ Use this pitch document as:
 
 Use the following documents when a deeper operating or feature review is required:
 
-- [b2c-model.md](b2c-model.md)
-- [b2b-model.md](b2b-model.md)
+- [b2c-model.md](../business-model/b2c-model.md)
+- [b2b-model.md](../business-model/b2b-model.md)
 
 ---
 

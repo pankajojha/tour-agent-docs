@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tour Planner — Architecture &amp; Delivery Dossier</title>
+<style>
+  /* Fallback: if the mermaid library can't load, show the diagram source legibly. */
+  pre.mermaid{ font-family: var(--font-mono); font-size:.8rem; line-height:1.5; color:var(--ink-soft); margin:0; }
+  pre.mermaid[data-processed]{ font-size:inherit; }
+  .mermaid svg{ display:block; margin:0 auto; max-width:100%; height:auto; }
+</style>
+</head>
+<body>
+<style>
+  @media (prefers-color-scheme: dark) {
+    :root{
+      --bg:#0f1a1f; --surface:#16232a; --surface-2:#1c2b33; --raised:#1f2f38;
+      --ink:#e7ede9; --ink-soft:#9fb0ac; --ink-faint:#6d8480;
+      --navy:#8fbbdd; --teal:#5fbfb0; --brass:#d3a35f;
+      --line:#2a3941; --line-soft:#223038;
+      --good:#6fbf85; --warn:#e0a94f; --crit:#e2735c;
+      --good-bg:#16281c; --warn-bg:#2b2113; --crit-bg:#2c1a16;
+    }
+  }
+  :root{
+    --bg:#eef1ed; --surface:#fbfcfa; --surface-2:#e3e8e1; --raised:#ffffff;
+    --ink:#12242c; --ink-soft:#465a58; --ink-faint:#7c8f8b;
+    --navy:#1c435f; --teal:#2f7d76; --brass:#a8763c;
+    --line:#d3d9d0; --line-soft:#e0e5dd;
+    --good:#3f7d54; --warn:#a3701f; --crit:#b8442f;
+    --good-bg:#e7f1e8; --warn-bg:#f6ecd9; --crit-bg:#f7e5e0;
+    --font-display: ui-serif, Charter, "Iowan Old Style", "Palatino Linotype", "Noto Serif", Georgia, serif;
+    --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f1a1f; --surface:#16232a; --surface-2:#1c2b33; --raised:#1f2f38;
+    --ink:#e7ede9; --ink-soft:#9fb0ac; --ink-faint:#6d8480;
+    --navy:#8fbbdd; --teal:#5fbfb0; --brass:#d3a35f;
+    --line:#2a3941; --line-soft:#223038;
+    --good:#6fbf85; --warn:#e0a94f; --crit:#e2735c;
+    --good-bg:#16281c; --warn-bg:#2b2113; --crit-bg:#2c1a16;
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1ed; --surface:#fbfcfa; --surface-2:#e3e8e1; --raised:#ffffff;
+    --ink:#12242c; --ink-soft:#465a58; --ink-faint:#7c8f8b;
+    --navy:#1c435f; --teal:#2f7d76; --brass:#a8763c;
+    --line:#d3d9d0; --line-soft:#e0e5dd;
+    --good:#3f7d54; --warn:#a3701f; --crit:#b8442f;
+    --good-bg:#e7f1e8; --warn-bg:#f6ecd9; --crit-bg:#f7e5e0;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font-body);
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--teal); color:var(--surface); }
+
+  a{ color:var(--navy); }
+  a:focus-visible, button:focus-visible, .tab:focus-visible{
+    outline:2px solid var(--teal); outline-offset:2px;
+  }
+
+  h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; text-wrap:balance; color:var(--ink); margin:0; }
+  p{ margin:0 0 .9em; max-width:66ch; color:var(--ink); }
+  .wide p{ max-width:none; }
+
+  .eyebrow{
+    font-family:var(--font-body); font-size:.72rem; font-weight:700;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--brass);
+  }
+
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 28px; }
+
+  /* ---------- Masthead ---------- */
+  .masthead{
+    border-bottom:1px solid var(--line);
+    background:
+      radial-gradient(1200px 260px at 85% -40%, color-mix(in oklab, var(--teal) 14%, transparent), transparent 70%),
+      var(--surface);
+    padding:52px 0 34px;
+  }
+  .masthead h1{ font-size:clamp(2rem, 4vw, 2.85rem); margin:.3em 0 .18em; }
+  .masthead .sub{ color:var(--ink-soft); font-size:1.05rem; max-width:62ch; }
+  .meta-row{
+    display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:26px;
+    font-family:var(--font-mono); font-size:.82rem; color:var(--ink-faint);
+  }
+  .meta-row b{ color:var(--ink-soft); font-weight:600; }
+
+  /* ---------- Sticky tab nav ---------- */
+  nav.tabs{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in oklab, var(--bg) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.tabs .wrap{ display:flex; gap:2px; overflow-x:auto; padding:0 28px; }
+  .tab{
+    flex:0 0 auto; padding:14px 16px; font-size:.86rem; font-weight:600;
+    color:var(--ink-soft); text-decoration:none; border-bottom:2px solid transparent;
+    white-space:nowrap;
+  }
+  .tab:hover{ color:var(--ink); }
+  .tab.current{ color:var(--navy); border-bottom-color:var(--teal); }
+
+  section{ padding:56px 0; border-bottom:1px solid var(--line-soft); }
+  section:last-of-type{ border-bottom:none; }
+  section > .wrap > .eyebrow{ display:block; margin-bottom:10px; }
+  section h2{ font-size:1.7rem; margin-bottom:.5em; }
+  .section-intro{ color:var(--ink-soft); max-width:74ch; margin-bottom:2em; }
+
+  /* ---------- Overview status grid ---------- */
+  .grid-6{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+    gap:16px; margin-top:8px;
+  }
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:6px;
+    padding:20px 22px;
+  }
+  .card h3{ font-size:1.02rem; font-family:var(--font-body); font-weight:700; }
+  .card .role{ font-size:.76rem; color:var(--ink-faint); margin:.2em 0 .9em; }
+  .card p{ font-size:.9rem; color:var(--ink-soft); margin-bottom:.9em; }
+
+  .meter{ display:flex; align-items:center; gap:10px; }
+  .meter .track{
+    flex:1; height:8px; border-radius:4px; background:var(--surface-2);
+    overflow:hidden;
+  }
+  .meter .fill{ height:100%; border-radius:4px; background:var(--teal); }
+  .meter .num{
+    font-family:var(--font-mono); font-variant-numeric:tabular-nums;
+    font-size:.82rem; color:var(--ink-soft); min-width:3.4em; text-align:right;
+  }
+
+  .tagset{ display:flex; flex-wrap:wrap; gap:6px; margin:.9em 0 0; }
+  .tag{
+    font-size:.72rem; font-family:var(--font-mono); padding:2px 8px;
+    border-radius:100px; border:1px solid var(--line); color:var(--ink-soft);
+    background:var(--surface-2);
+  }
+
+  /* ---------- status pills (semantic, never color alone) ---------- */
+  .pill{
+    display:inline-flex; align-items:center; gap:6px; font-size:.76rem;
+    font-weight:600; padding:2px 9px 2px 7px; border-radius:100px; white-space:nowrap;
+  }
+  .pill::before{ content:""; width:7px; height:7px; border-radius:50%; }
+  .pill.good{ background:var(--good-bg); color:var(--good); }
+  .pill.good::before{ background:var(--good); }
+  .pill.warn{ background:var(--warn-bg); color:var(--warn); }
+  .pill.warn::before{ background:var(--warn); }
+  .pill.crit{ background:var(--crit-bg); color:var(--crit); }
+  .pill.crit::before{ background:var(--crit); }
+
+  /* ---------- diagram panel ---------- */
+  .panel{
+    background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:22px; margin:1.6em 0;
+  }
+  .panel .cap{ font-size:.8rem; color:var(--ink-faint); margin-top:14px; }
+  pre.mermaid{ overflow-x:auto; }
+
+  .legend{ display:flex; flex-wrap:wrap; gap:16px; margin-top:10px; font-size:.82rem; color:var(--ink-soft); }
+  .legend .swatch{ display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:6px; vertical-align:-1px; }
+
+  .invariants{ list-style:none; margin:1.4em 0 0; padding:0; display:grid; gap:10px; }
+  .invariants li{
+    display:flex; gap:12px; padding:12px 16px; background:var(--surface);
+    border:1px solid var(--line); border-radius:6px; font-size:.92rem; color:var(--ink-soft);
+  }
+  .invariants li .n{
+    font-family:var(--font-mono); color:var(--brass); font-weight:700; flex:0 0 auto;
+  }
+  .invariants li b{ color:var(--ink); }
+
+  /* ---------- workspace deep dive ---------- */
+  .ws{ margin-bottom:52px; }
+  .ws:last-child{ margin-bottom:0; }
+  .ws-head{ display:flex; flex-wrap:wrap; align-items:baseline; gap:14px; margin-bottom:4px; }
+  .ws-head h3{ font-family:var(--font-display); font-size:1.4rem; }
+  .ws-head .path{ font-family:var(--font-mono); font-size:.82rem; color:var(--ink-faint); }
+  .ws-verdict{ font-size:.95rem; color:var(--ink-soft); margin:.5em 0 1.1em; max-width:80ch; }
+  .ws-verdict b{ color:var(--ink); }
+
+  .ws-meter{ max-width:420px; margin-bottom:1.4em; }
+  .ws-meter .label{ display:flex; justify-content:space-between; font-size:.78rem; color:var(--ink-faint); margin-bottom:5px; }
+
+  table{ width:100%; border-collapse:collapse; font-size:.88rem; }
+  .table-scroll{ overflow-x:auto; border:1px solid var(--line); border-radius:6px; }
+  th,td{ text-align:left; padding:10px 14px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+  thead th{
+    background:var(--surface-2); font-size:.72rem; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--ink-faint); font-weight:700;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background:color-mix(in oklab, var(--teal) 5%, transparent); }
+  td.mono, th.mono{ font-family:var(--font-mono); font-size:.82rem; }
+
+  .split{ display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:1.4em; }
+  @media (max-width:760px){ .split{ grid-template-columns:1fr; } }
+  .split .col h4{
+    font-size:.78rem; text-transform:uppercase; letter-spacing:.06em;
+    margin-bottom:.7em; font-family:var(--font-body); font-weight:700;
+  }
+  .split .col.real h4{ color:var(--good); }
+  .split .col.gap h4{ color:var(--crit); }
+  .split ul{ margin:0; padding-left:1.1em; color:var(--ink-soft); font-size:.9rem; }
+  .split li{ margin-bottom:.5em; }
+
+  .callout{
+    margin-top:1.3em; padding:14px 18px; border-radius:6px; font-size:.88rem;
+    border-left:3px solid var(--brass); background:var(--surface); color:var(--ink-soft);
+  }
+  .callout b{ color:var(--ink); }
+
+  /* ---------- roadmap ---------- */
+  .phase-strip{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin:1.8em 0 0;
+    border:1px solid var(--line); border-radius:8px; overflow:hidden;
+  }
+  @media (max-width:820px){ .phase-strip{ grid-template-columns:1fr; } }
+  .phase{ background:var(--surface); padding:20px 20px 22px; position:relative; }
+  .phase + .phase{ border-left:1px solid var(--line); }
+  @media (max-width:820px){ .phase + .phase{ border-left:none; border-top:1px solid var(--line);} }
+  .phase .idx{ font-family:var(--font-mono); font-size:.74rem; color:var(--ink-faint); }
+  .phase h4{ font-family:var(--font-body); font-size:1rem; margin:.35em 0 .3em; }
+  .phase .when{ font-size:.76rem; color:var(--brass); font-weight:600; margin-bottom:.8em; }
+  .phase p{ font-size:.85rem; color:var(--ink-soft); margin-bottom:0; }
+  .phase-bar{ height:4px; border-radius:2px; margin-bottom:12px; }
+  .phase:nth-child(1) .phase-bar{ background:var(--crit); }
+  .phase:nth-child(2) .phase-bar{ background:var(--warn); }
+  .phase:nth-child(3) .phase-bar{ background:var(--teal); }
+  .phase:nth-child(4) .phase-bar{ background:var(--navy); }
+
+  .footnote{ font-size:.82rem; color:var(--ink-faint); margin-top:2.4em; padding-top:1.4em; border-top:1px solid var(--line-soft); }
+
+  footer{ padding:36px 0 60px; }
+  footer .wrap{ font-size:.8rem; color:var(--ink-faint); }
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <span class="eyebrow">Architecture &amp; Delivery Dossier</span>
+    <h1>Tour Planner Platform</h1>
+    <p class="sub">A five-workspace monorepo for cruise shore-excursion discovery, AI-assisted trip planning, and commerce — read straight from the codebase as it stands today, not from the original spec.</p>
+    <div class="meta-row">
+      <span><b>Surveyed</b> 26 Jul 2026</span>
+      <span><b>Revised</b> 30 Jul 2026 (ops addendum)</span>
+      <span><b>Workspaces</b> 6 (5 code + 1 business docs)</span>
+      <span><b>Repo</b> /opt/tour-planner</span>
+      <span><b>Stack</b> Go 1.21 · Python 3.11 · React 19 · AWS CDK · Strapi</span>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <a class="tab current" href="#overview">Overview</a>
+    <a class="tab" href="#map">System Map</a>
+    <a class="tab" href="#workspaces">Workspaces</a>
+    <a class="tab" href="#data-security">Data &amp; Security</a>
+    <a class="tab" href="#gaps">Gap Analysis</a>
+    <a class="tab" href="#roadmap">Roadmap</a>
+    <a class="tab" href="#ops">Ops Addendum</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ OVERVIEW ============ -->
+<section id="overview">
+  <div class="wrap">
+    <span class="eyebrow">01 — Overview</span>
+    <h2>What this platform is, and how far it's gotten</h2>
+    <p class="section-intro">
+      Travelers assemble a trip — shore excursions, hotels, flights, cruise legs, dining — inside <code>tour-planner-ui</code>.
+      <code>tour-agent</code> is the system of record for every transactional fact (users, trips, bookings, policy).
+      <code>tour-planner-ai</code> is a stateless Bedrock AgentCore orchestrator that reasons over redacted trip data and
+      is never allowed to own state directly. <code>tour-commerce</code> sits on top as the cart/checkout/payments layer,
+      calling both of the above before a booking is ever created. A Strapi CMS was modeled in parallel but isn't wired in yet.
+    </p>
+
+    <div class="grid-6">
+      <div class="card">
+        <h3>tour-agent</h3>
+        <div class="role">Core transactional backend · Go + CDK</div>
+        <div class="meter"><div class="track"><div class="fill" style="width:62%"></div></div><span class="num">~62%</span></div>
+        <p>Auth, trips (FSM), policy (RBAC), AI proxy — all four services are real, working Go. Zero automated tests.</p>
+        <div class="tagset"><span class="tag">4/4 services live</span><span class="tag">7/7 CDK stacks</span><span class="tag">0 tests</span></div>
+      </div>
+      <div class="card">
+        <h3>tour-commerce</h3>
+        <div class="role">Cart · checkout · payments · Go + CDK</div>
+        <div class="meter"><div class="track"><div class="fill" style="width:75%"></div></div><span class="num">~75%</span></div>
+        <p>Furthest along — real Stripe integration, real cross-service calls. One CDK stack references a missing asset.</p>
+        <div class="tagset"><span class="tag">Stripe wired</span><span class="tag">deploy-blocking bug</span><span class="tag">0 tests</span></div>
+      </div>
+      <div class="card">
+        <h3>tour-planner-ai</h3>
+        <div class="role">Bedrock AgentCore orchestration · Python</div>
+        <div class="meter"><div class="track"><div class="fill" style="width:57%"></div></div><span class="num">~57%</span></div>
+        <p>Privacy guardrails and prompt store are production-grade. 3 of 9 agents are stubs; MCP→tour-agent link doesn't exist yet.</p>
+        <div class="tagset"><span class="tag">6/9 agents real</span><span class="tag">MCP stubbed</span><span class="tag">~0 tests</span></div>
+      </div>
+      <div class="card">
+        <h3>tour-planner-ui</h3>
+        <div class="role">React 19 SPA · Vite</div>
+        <div class="meter"><div class="track"><div class="fill" style="width:57%"></div></div><span class="num">~57%</span></div>
+        <p>Auth and trip-intake are solid and correctly DB-driven. No trip dashboard, no AI chat UI, no admin views; purchase flow is a labeled mock.</p>
+        <div class="tagset"><span class="tag">auth complete</span><span class="tag">purchase flow = mock</span></div>
+      </div>
+      <div class="card">
+        <h3>tour-planner-cms</h3>
+        <div class="role">Strapi headless CMS</div>
+        <div class="meter"><div class="track"><div class="fill" style="width:18%"></div></div><span class="num">~18%</span></div>
+        <p>24 well-modeled content types mirroring the tour-agent domain, but zero runtime integration anywhere and not yet committed to git.</p>
+        <div class="tagset"><span class="tag">schema only</span><span class="tag">unintegrated</span><span class="tag">untracked</span></div>
+      </div>
+      <div class="card">
+        <h3>tour-agent-docs</h3>
+        <div class="role">Business &amp; go-to-market · Markdown</div>
+        <div class="meter"><div class="track"><div class="fill" style="width:100%"></div></div><span class="num">n/a</span></div>
+        <p>Executive summary, B2B/B2C models, revenue pitch, spend-controls blueprint, investor deck outline — now grouped into <code>business-model/</code> and <code>fundraising/</code> folders and served by the dockerized docs site.</p>
+        <div class="tagset"><span class="tag">7 documents</span><span class="tag">grouped by business case</span><span class="tag">dockerized site</span></div>
+      </div>
+    </div>
+
+    <p class="footnote">Percentages are a judgment call from direct code inspection (line counts, endpoint coverage, grep for stubs/TODOs) against each workspace's own design docs — not a coverage-tool output. Treat them as relative signal, not a KPI.</p>
+  </div>
+</section>
+
+<!-- ============ SYSTEM MAP ============ -->
+<section id="map">
+  <div class="wrap">
+    <span class="eyebrow">02 — System Map</span>
+    <h2>Service boundaries and data flow</h2>
+    <p class="section-intro">
+      Everything client-facing enters through <code>tour-agent</code>. Sensitive fields are sanitized before any AI call.
+      <code>tour-planner-ai</code> only ever sees redacted payloads and never touches either database directly for
+      user-facing writes. The CMS sits outside this flow entirely today.
+    </p>
+
+    <div class="panel">
+      <pre class="mermaid">
+flowchart TB
+  UI["tour-planner-ui\nReact 19 SPA"]
+
+  subgraph TA["tour-agent — Go Lambda (system of record)"]
+    AUTH["auth\n8 sub-lambdas"]
+    TRIPS["trips\nFSM lifecycle"]
+    POLICY["policy\n5-tier RBAC"]
+    PROXY["ai-proxy\nallowlist reverse proxy"]
+  end
+
+  subgraph AIP["tour-planner-ai — Bedrock AgentCore"]
+    ORCH["TourPlannerOrchestrator"]
+    GUARD["privacy_guard.py\nPII/PCI redaction"]
+    AGENTS["9 specialist agents\n(6 real, 3 stubbed)"]
+  end
+
+  subgraph TC["tour-commerce — Go Lambda"]
+    CART["cart"]
+    CHECKOUT["checkout"]
+    ORDERS["orders"]
+    PAY["payments"]
+    AIC["ai-commerce"]
+  end
+
+  BEDROCK["AWS Bedrock\n(Claude)"]
+  STRIPE["Stripe API"]
+  DB1[("Aurora — tour-agent DB")]
+  DB2[("Aurora — tour-commerce DB")]
+  REDIS[("Redis\ninventory locking")]
+  CMS["tour-planner-cms\n(Strapi) — not wired in"]
+
+  UI -->|VITE_AUTH_BASE_URL| AUTH
+  UI -->|VITE_TRIPS_API_URL| TRIPS
+  UI -->|VITE_AI_PROXY_URL| PROXY
+  PROXY -->|AI_GATEWAY_URL, allowlisted routes| ORCH
+  ORCH --> AGENTS
+  AGENTS --> GUARD --> BEDROCK
+
+  CHECKOUT -->|TOUR_PLANNER_AI_URL| ORCH
+  CHECKOUT -->|TOUR_AGENT_API_URL| TRIPS
+  AIC -->|budget / upsell calls| ORCH
+  PAY --> STRIPE
+
+  AUTH --> DB1
+  TRIPS --> DB1
+  POLICY --> DB1
+  TRIPS -.-> REDIS
+
+  CART --> DB2
+  CHECKOUT --> DB2
+  ORDERS --> DB2
+  PAY --> DB2
+
+  CMS -.->|no callers found| TA
+
+  classDef unwired stroke-dasharray: 4 4;
+  class CMS unwired
+      </pre>
+      <p class="cap">Dashed edges mark links that are documented but not exercised by any caller in the codebase today.</p>
+    </div>
+
+    <ol class="invariants">
+      <li><span class="n">01</span><div><b>tour-planner-ai never owns transactional state</b> — it reads via MCP tools and writes go through tour-agent APIs. <i>(Currently unmet: writes go to the mock API, not tour-agent — see Gap Analysis.)</i></div></li>
+      <li><span class="n">02</span><div><b>One active trip per user</b>, enforced by a DB unique index plus an application-layer 409.</div></li>
+      <li><span class="n">03</span><div><b>Privacy first</b> — every text payload passes through <code>prepare_model_input()</code> before reaching the model; no PII/PCI is sent to Bedrock.</div></li>
+      <li><span class="n">04</span><div><b>Strict AI-proxy allowlist</b> — <code>ai-proxy</code> forwards only ~11 named routes; there is no wildcard path.</div></li>
+      <li><span class="n">05</span><div><b>Trip lifecycle is data-driven</b> — <code>trip_status_transitions</code> and <code>trip_operation_rules</code> own the FSM; the UI reads <code>/operations</code> and <code>/ui-hints</code> rather than hardcoding status logic.</div></li>
+      <li><span class="n">06</span><div><b>Privilege escalation is blocked</b> — the policy service checks the caller's role level before allowing any role assignment.</div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ WORKSPACES ============ -->
+<section id="workspaces">
+  <div class="wrap">
+    <span class="eyebrow">03 — Workspace Deep Dive</span>
+    <h2>What's real, what's a stub</h2>
+    <p class="section-intro">Each workspace below was read directly — service by service — rather than taken on faith from its own README.</p>
+
+    <!-- tour-agent -->
+    <div class="ws">
+      <div class="ws-head"><h3>tour-agent</h3><span class="path">/opt/tour-planner/tour-agent</span></div>
+      <div class="ws-meter">
+        <div class="label"><span>Overall</span><span>~62%</span></div>
+        <div class="meter"><div class="track"><div class="fill" style="width:62%"></div></div></div>
+      </div>
+      <p class="ws-verdict">All four Go services are genuine, non-trivial implementations (~4,800 LOC combined), and all seven CDK stacks are wired end-to-end in <code>bin/app.ts</code>, including a working custom migration runner. The gap isn't "is it real" — it's test coverage and the long tail of aspirational features (WAF, OpenSearch, notifications, vouchers, reviews, recommendations) that the original spec assumed but nothing in the code attempts yet.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Service</th><th>Endpoints</th><th>Status</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">auth</td><td>8 sub-lambdas: login, signup, oauth-start/callback, passwordless-request/verify, pre-signup, token-refresh</td><td><span class="pill good">Real</span></td><td>~2,356 LOC; real Cognito custom-auth flows, OAuth state handling, passwordless token store</td></tr>
+            <tr><td class="mono">trips</td><td>6 routes incl. <span class="mono">/operations</span>, <span class="mono">/transition</span>, <span class="mono">/ui-hints/{status}</span></td><td><span class="pill good">Real</span></td><td>~830 LOC; dedicated <span class="mono">lifecycle</span> state-machine module</td></tr>
+            <tr><td class="mono">policy</td><td>17 handler functions — CRUD, rule mgmt, activation, overrides, reports, role assignment</td><td><span class="pill good">Real</span></td><td>~1,384 LOC; largest service in the repo</td></tr>
+            <tr><td class="mono">ai-proxy</td><td>~11 allowlisted routes → <span class="mono">AI_GATEWAY_URL</span></td><td><span class="pill good">Real</span></td><td>268 LOC, intentionally thin — a security boundary, not business logic</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="split">
+        <div class="col real">
+          <h4>Confirmed working</h4>
+          <ul>
+            <li>All 7 CDK stacks instantiated with real dependency wiring (VPC → security groups → DB → schema deployer)</li>
+            <li>Custom Node.js migration runner (Flyway-style naming, SHA-256 checksums, <span class="mono">schema_migrations</span> tracking) applies all 4 <span class="mono">V00N</span> migrations</li>
+            <li>KMS threaded through security/database/cache/storage stacks consistently</li>
+          </ul>
+        </div>
+        <div class="col gap">
+          <h4>Not implemented</h4>
+          <ul>
+            <li><b>Zero test files</b> across all four services (<span class="mono">*_test.go</span> — no matches)</li>
+            <li>Voucher generation (PDF/QR) — only an S3 bucket name exists, no generation code</li>
+            <li>Reviews, recommendations engine, WAF, OpenSearch, Pinpoint/SMS — all absent</li>
+            <li>Monitoring stack is log groups only — no CloudWatch alarms, no SNS, no dashboards</li>
+            <li>Stripe secret is a literal <span class="mono">"placeholder-update-after-deployment"</span> — manual post-deploy step</li>
+            <li>Dead empty file <span class="mono">auth-stack.ts</span>; <span class="mono">tour-agent/terraform/</span> is a stale, superseded spike</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- tour-commerce -->
+    <div class="ws">
+      <div class="ws-head"><h3>tour-commerce</h3><span class="path">/opt/tour-planner/tour-commerce</span></div>
+      <div class="ws-meter">
+        <div class="label"><span>Overall</span><span>~75%</span></div>
+        <div class="meter"><div class="track"><div class="fill" style="width:75%"></div></div></div>
+      </div>
+      <p class="ws-verdict">The most complete code workspace in the monorepo. All five services do real work, both cross-service integrations (tour-planner-ai and tour-agent) are genuine HTTP calls with sane fallback behavior, and Stripe is the real SDK, not a mock. The one serious problem is a deploy-breaking asset reference.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Service</th><th>Endpoints</th><th>Status</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">cart</td><td>6 routes: create / get-active / get / add-item / update-item / remove-item</td><td><span class="pill good">Real</span></td><td>Real SQL, Cognito ownership checks</td></tr>
+            <tr><td class="mono">checkout</td><td>initiate → get session → confirm</td><td><span class="pill good">Real</span></td><td>Calls tour-planner-ai for validation, then tour-agent to create bookings</td></tr>
+            <tr><td class="mono">orders</td><td>list / get / cancel</td><td><span class="pill good">Real</span></td><td>Pagination via limit/offset</td></tr>
+            <tr><td class="mono">payments</td><td>create intent / Stripe webhook / refund</td><td><span class="pill good">Real</span></td><td><span class="mono">stripe-go/v74</span> with signature-verified webhooks</td></tr>
+            <tr><td class="mono">ai-commerce</td><td>recommendations / budget-check / upsell</td><td><span class="pill good">Real</span></td><td>Logs every call to <span class="mono">commerce_ai_interactions</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="split">
+        <div class="col real">
+          <h4>Confirmed working</h4>
+          <ul>
+            <li><span class="mono">ValidateWithAI</span> and <span class="mono">CreateTourAgentBooking</span> are real outbound HTTP calls, not stubs</li>
+            <li>Deliberate design: AI-validation failure degrades to permissive default (checkout isn't blocked); a failed tour-agent booking call hard-fails (correctly non-degradable)</li>
+            <li>3 CDK stacks (database, api, events) fully wired, including EventBridge + DLQ + SNS</li>
+          </ul>
+        </div>
+        <div class="col gap">
+          <h4>Not implemented / broken</h4>
+          <ul>
+            <li><b>Deploy-breaking:</b> <span class="mono">commerce-database-stack.ts</span> references <span class="mono">../../database/schema-deployer-lambda</span>, which does not exist anywhere in the repo</li>
+            <li>Zero test files; no test script in <span class="mono">package.json</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- tour-planner-ai -->
+    <div class="ws">
+      <div class="ws-head"><h3>tour-planner-ai</h3><span class="path">/opt/tour-planner/tour-planner-ai</span></div>
+      <div class="ws-meter">
+        <div class="label"><span>Overall</span><span>~57%</span></div>
+        <div class="meter"><div class="track"><div class="fill" style="width:57%"></div></div></div>
+      </div>
+      <p class="ws-verdict">The privacy pipeline and prompt store are the strongest code in this workspace — genuinely production-grade. The weak point is that the "MCP tools call tour-agent" story in the design docs doesn't exist in code yet: every tool call, including writes, targets the local mock API.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Agent</th><th>Status</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">hotel / flight / cruise</td><td><span class="pill good">Real</span></td><td>200–420 lines each; field extraction, prompt_store + privacy_guard + policy_client wiring</td></tr>
+            <tr><td class="mono">budget</td><td><span class="pill good">Real</span></td><td>Full context-key routing, real calculation logic</td></tr>
+            <tr><td class="mono">itinerary summary / shared-trip synthesis</td><td><span class="pill good">Real</span></td><td>Substantial, wired to prompt store</td></tr>
+            <tr><td class="mono">excursion</td><td><span class="pill crit">Stub</span></td><td>~40 lines; hardcoded destination-keyword list explicitly marked <span class="mono">(placeholder)</span></td></tr>
+            <tr><td class="mono">restaurant / sharing</td><td><span class="pill crit">Stub</span></td><td>~40–46 lines each, single function, no policy/prompt integration</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="split">
+        <div class="col real">
+          <h4>Confirmed working</h4>
+          <ul>
+            <li><span class="mono">privacy_guard.py</span>: real Luhn-check card redaction, plus regexes for email/phone/CVV/passport/SSN/booking-ref/address, and a non-negotiable guardrail-appendix injector</li>
+            <li><span class="mono">prompt_store.py</span>: genuine <span class="mono">asyncpg</span> pooling; <span class="mono">activate_system_prompt()</span> runs in a transaction and writes an audit row; 300s cache TTL as documented</li>
+            <li>Infra (<span class="mono">agentcore-stack</span>, <span class="mono">ecr-stack</span>, <span class="mono">public-api-stack</span>) wires a real Cognito-authorized public API</li>
+          </ul>
+        </div>
+        <div class="col gap">
+          <h4>Not implemented</h4>
+          <ul>
+            <li><b>No real MCP↔tour-agent integration.</b> <span class="mono">agents/tools.py</span> hardcodes <span class="mono">MOCK_API_BASE_URL=localhost:8001</span> for every call, including writes that should hit tour-agent</li>
+            <li>The MCP Lambda implements exactly one tool (<span class="mono">search_excursions</span>); every other tool name returns <span class="mono">"not implemented"</span></li>
+            <li>Test suite is effectively one 28-line manual script with no assertions, no pytest, no CI</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- tour-planner-ui -->
+    <div class="ws">
+      <div class="ws-head"><h3>tour-planner-ui</h3><span class="path">/opt/tour-planner/tour-planner-ui</span></div>
+      <div class="ws-meter">
+        <div class="label"><span>Overall</span><span>~57%</span></div>
+        <div class="meter"><div class="track"><div class="fill" style="width:57%"></div></div></div>
+      </div>
+      <p class="ws-verdict">Auth and trip-intake are the strongest parts, and correctly follow the "no hardcoded status" invariant end to end. But several surfaces implied by the platform story simply don't exist as pages yet, and the purchase flow that does exist is explicitly labeled as a mock in its own source.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Area</th><th>Status</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Auth (signup/login/OAuth/passwordless)</td><td><span class="pill good">Real</span></td><td>Dedicated service file per flow under <span class="mono">src/auth/</span></td></tr>
+            <tr><td>Trip intake &amp; sharing</td><td><span class="pill good">Real</span></td><td><span class="mono">TripIntakePage</span>, <span class="mono">ItinerarySharePage</span>; drives <span class="mono">useTripLifecycle</span> / <span class="mono">TripStatusBanner</span> / <span class="mono">TripGuard</span> correctly from the API</td></tr>
+            <tr><td>Trip listing / dashboard</td><td><span class="pill crit">Missing</span></td><td><span class="mono">TripPlansPage</span> is actually a pricing/upsell page — no "my trips" list exists</td></tr>
+            <tr><td>Excursion browse / checkout</td><td><span class="pill warn">Mock</span></td><td>Catch-all route is literally labeled <span class="mono">"Shore Excursion Purchase Flow (Mock)"</span> using <span class="mono">mockExcursions</span>; real <span class="mono">searchExcursions</span>/<span class="mono">quoteExcursion</span> calls exist but aren't used by it</td></tr>
+            <tr><td>AI chat / assistant UI</td><td><span class="pill crit">Missing</span></td><td><span class="mono">src/ai/</span> is service-layer only — no chat component consumes it directly</td></tr>
+            <tr><td>Policy / admin views</td><td><span class="pill crit">Missing</span></td><td><span class="mono">src/policy/</span> is types + service barrel exports only, zero consumers</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout"><b>Deployment note:</b> ships to Cloudflare Pages via a manual <span class="mono">wrangler pages deploy</span> command; the repo's own <span class="mono">.github/workflows</span> only contains a Datadog synthetics check — there is no CI/CD pipeline actually deploying this today.</div>
+    </div>
+
+    <!-- tour-planner-cms -->
+    <div class="ws">
+      <div class="ws-head"><h3>tour-planner-cms</h3><span class="path">/opt/tour-planner/tour-planner-cms</span></div>
+      <div class="ws-meter">
+        <div class="label"><span>Overall</span><span>~18%</span></div>
+        <div class="meter"><div class="track"><div class="fill" style="width:18%"></div></div></div>
+      </div>
+      <p class="ws-verdict">24 content types re-model almost the entire tour-agent domain (users, bookings, payments, pricing, trip lifecycle, system prompts) inside Strapi — schema work only, with no admin customization and no runtime caller anywhere in the platform. It's also still untracked in git. Worth a deliberate decision (keep and wire in, or retire) rather than letting it drift.</p>
+      <div class="callout"><b>Notable:</b> <span class="mono">app-user</span> and <span class="mono">tour-user</span> both map to the same <span class="mono">tour_users</span> collection — a leftover duplicate definition that should be resolved either way.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ DATA & SECURITY ============ -->
+<section id="data-security">
+  <div class="wrap">
+    <span class="eyebrow">04 — Data &amp; Security</span>
+    <h2>Schema and the security model</h2>
+    <p class="section-intro">Two independent Aurora Serverless v2 clusters — deliberately not shared — plus the controls layered around them.</p>
+
+    <h3 style="font-size:1.1rem;margin-bottom:.6em;">tour-agent database — 4 migrations</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th class="mono">Migration</th><th>Contents</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">V001</td><td>Core: <span class="mono">AppUsers</span>, <span class="mono">social_profiles</span>, <span class="mono">sessions</span>, <span class="mono">destinations</span>, <span class="mono">categories</span>, <span class="mono">suppliers</span>, <span class="mono">excursions</span>, <span class="mono">schedules</span>, <span class="mono">bookings</span>, <span class="mono">payments</span>, <span class="mono">reviews</span>, <span class="mono">inventory</span>, <span class="mono">pricing</span></td></tr>
+          <tr><td class="mono">V002</td><td>AI &amp; collaboration: <span class="mono">ai_runs</span>, <span class="mono">webhooks</span>, <span class="mono">trip_plans</span>, <span class="mono">trip_category_entries</span>, contributor blocks, <span class="mono">trip_status_transitions</span>, <span class="mono">trip_operation_rules</span>, <span class="mono">trip_ui_hints</span></td></tr>
+          <tr><td class="mono">V003</td><td>Policy: 5-tier RBAC (<span class="mono">roles</span>, <span class="mono">user_roles</span>), <span class="mono">company_policies</span>, <span class="mono">policy_rules</span>, <span class="mono">policy_evaluations</span>, <span class="mono">policy_overrides</span>, approval workflow</td></tr>
+          <tr><td class="mono">V004</td><td>Prompts: <span class="mono">system_prompts</span>, <span class="mono">system_prompt_activations</span>, <span class="mono">activate_system_prompt()</span>, <span class="mono">active_system_prompts</span> view, RLS</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.85rem;color:var(--ink-soft);margin-top:.7em;">Trip lifecycle FSM: <span class="mono">draft → active → shared → finalized → consumed</span>, transitions data-driven from <span class="mono">trip_status_transitions</span>. One active trip per owner enforced by <span class="mono">uq_one_active_trip_per_owner</span>. RBAC tiers, highest privilege first: <span class="mono">platform_admin(1) → company_admin(2) → travel_manager(3) → dept_manager(4) → traveler(5)</span>.</p>
+
+    <h3 style="font-size:1.1rem;margin:2em 0 .6em;">tour-commerce database — 1 migration, separate cluster</h3>
+    <p style="font-size:.9rem;color:var(--ink-soft);">
+      <span class="mono">commerce_carts</span> / <span class="mono">commerce_cart_items</span> · <span class="mono">commerce_checkout_sessions</span> (short-lived, carries an AI validation snapshot) ·
+      <span class="mono">commerce_orders</span> / <span class="mono">commerce_order_items</span> (linked back via <span class="mono">tour_agent_booking_id</span>) ·
+      <span class="mono">commerce_payments</span> (Stripe) · <span class="mono">commerce_ai_interactions</span> (audit log of every AI call made during commerce).
+    </p>
+
+    <h3 style="font-size:1.1rem;margin:2em 0 .6em;">Security model</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Layer</th><th>Mechanism</th></tr></thead>
+        <tbody>
+          <tr><td>Network</td><td>VPC private/isolated subnets; security groups scope Lambda→DB(5432) and Lambda→Redis(6379)</td></tr>
+          <tr><td>Encryption at rest</td><td>KMS customer-managed key for Aurora, Redis, vouchers S3</td></tr>
+          <tr><td>Encryption in transit</td><td>TLS everywhere; Redis <span class="mono">transitEncryptionEnabled: true</span></td></tr>
+          <tr><td>Secrets</td><td>Secrets Manager: DB credentials, Stripe key, Redis auth token</td></tr>
+          <tr><td>Auth</td><td>Cognito JWT on every API Gateway route</td></tr>
+          <tr><td>RBAC</td><td>5-tier role hierarchy in the DB; escalation blocked at the Go layer</td></tr>
+          <tr><td>AI input</td><td>Regex PII/PCI redaction before every model call</td></tr>
+          <tr><td>AI output</td><td>Non-negotiable privacy guardrail block appended to every agent system prompt</td></tr>
+          <tr><td>CDN</td><td>CloudFront OAI for S3; HTTPS-only; TLS 1.2+</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GAPS ============ -->
+<section id="gaps">
+  <div class="wrap">
+    <span class="eyebrow">05 — Gap Analysis</span>
+    <h2>What actually needs attention, ranked</h2>
+    <p class="section-intro">Pulled together across all five code workspaces. Severity reflects blast radius, not effort to fix.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Severity</th><th>Gap</th><th>Where</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill crit">Critical</span></td><td>Missing <span class="mono">schema-deployer-lambda</span> asset</td><td class="mono">tour-commerce</td><td>Referenced by the database CDK stack; <span class="mono">cdk synth/deploy</span> fails today</td></tr>
+          <tr><td><span class="pill crit">Critical</span></td><td>Zero automated tests</td><td class="mono">tour-agent · tour-commerce · tour-planner-ai</td><td>~7,000+ LOC of transactional and payment logic has no regression safety net</td></tr>
+          <tr><td><span class="pill crit">Critical</span></td><td>MCP tools only talk to the mock API</td><td class="mono">tour-planner-ai</td><td>Design invariant #1 ("AI never owns state, writes go through tour-agent") is currently unmet in code</td></tr>
+          <tr><td><span class="pill warn">Warning</span></td><td>3 of 9 specialist agents are placeholder stubs</td><td class="mono">tour-planner-ai</td><td>Excursion, restaurant, and sharing agents lack real logic and prompt-store wiring</td></tr>
+          <tr><td><span class="pill warn">Warning</span></td><td>No trip dashboard, AI chat UI, or admin views</td><td class="mono">tour-planner-ui</td><td>Backend capability (policy, AI) has no frontend surface to reach it</td></tr>
+          <tr><td><span class="pill warn">Warning</span></td><td>Purchase flow is a mock, disconnected from real search</td><td class="mono">tour-planner-ui</td><td>Real <span class="mono">searchExcursions</span>/<span class="mono">quoteExcursion</span> exist but aren't used by the checkout stepper</td></tr>
+          <tr><td><span class="pill warn">Warning</span></td><td>Monitoring stack = log groups only</td><td class="mono">tour-agent</td><td>No CloudWatch alarms, SNS, or dashboards despite the name</td></tr>
+          <tr><td><span class="pill warn">Warning</span></td><td>Stripe secret is a literal placeholder string</td><td class="mono">tour-agent</td><td>Manual post-deploy step easy to forget before go-live</td></tr>
+          <tr><td><span class="pill warn">Warning</span></td><td>CMS is schema-only, unwired, uncommitted</td><td class="mono">tour-planner-cms</td><td>Duplicate modeling effort (<span class="mono">app-user</span>/<span class="mono">tour-user</span> collide) with no clear owner or decision</td></tr>
+          <tr><td><span class="pill warn">Warning</span></td><td>No CI/CD pipeline for the UI</td><td class="mono">tour-planner-ui</td><td>Deploys are a manual <span class="mono">wrangler</span> command run by hand</td></tr>
+          <tr><td>&nbsp;</td><td>Voucher generation, reviews, recommendations engine, WAF, OpenSearch, notifications, multi-region DR</td><td class="mono">tour-agent</td><td>All present in the original spec, none attempted in code — scope decision needed, not a bug</td></tr>
+          <tr><td>&nbsp;</td><td>Dead/stale files</td><td class="mono">tour-agent</td><td>Empty <span class="mono">auth-stack.ts</span>; the entire <span class="mono">terraform/</span> spike superseded by CDK</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ROADMAP ============ -->
+<section id="roadmap">
+  <div class="wrap">
+    <span class="eyebrow">06 — Project Plan</span>
+    <h2>Sequencing the work to completion</h2>
+    <p class="section-intro">Four phases, ordered by blast radius first, then by what unlocks the next phase. Aspirational-spec items (WAF, OpenSearch, DR, notifications) are deliberately last — they're additive, not blocking, for an MVP launch.</p>
+
+    <div class="phase-strip">
+      <div class="phase">
+        <div class="phase-bar"></div>
+        <div class="idx">Phase 0</div>
+        <h4>Stop the bleeding</h4>
+        <div class="when">1–2 weeks</div>
+        <p>Fix the tour-commerce deploy-blocking asset reference; replace the Stripe placeholder secret with a real rotation step; delete the dead <span class="mono">auth-stack.ts</span> and the stale <span class="mono">terraform/</span> spike; resolve the <span class="mono">app-user</span>/<span class="mono">tour-user</span> Strapi collision.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-bar"></div>
+        <div class="idx">Phase 1</div>
+        <h4>Close the MVP loop</h4>
+        <div class="when">4–8 weeks</div>
+        <p>Wire tour-planner-ai's MCP tools to real tour-agent endpoints instead of the mock API. Finish the 3 stubbed agents. Build the missing UI surfaces: trip dashboard, an AI chat/assistant page, and a minimal admin view for policy. Replace the mock purchase flow with the real search/quote calls that already exist.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-bar"></div>
+        <div class="idx">Phase 2</div>
+        <h4>Make it safe to change</h4>
+        <div class="when">4–6 weeks</div>
+        <p>Add test coverage to tour-agent, tour-commerce, and tour-planner-ai — property tests for inventory/booking atomicity and pricing were explicitly planned but never written. Stand up real CloudWatch alarms/SNS/dashboards. Wire a CI/CD pipeline for tour-planner-ui. Decide the CMS's fate: integrate it as the excursion/content authoring surface, or retire it.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-bar"></div>
+        <div class="idx">Phase 3</div>
+        <h4>Aspirational-spec backlog</h4>
+        <div class="when">Ongoing, post-launch</div>
+        <p>Voucher generation with QR check-in, reviews &amp; ratings, the recommendation engine, OpenSearch-backed search/facets, WAF, multi-region DR, notification system (SES/Pinpoint), audit-log query UI. Pull items forward only as real usage demands them.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:1.8em;">
+      <b>Sequencing rationale:</b> Phase 0 items are each under a day of work but currently block a clean deploy or create silent risk — fix them before anything else lands on top. Phase 1 is what turns "impressive demo" into "a trip you could actually book end to end." Phase 2 is what makes Phase 1's code trustworthy to keep changing. Phase 3 is the difference between an MVP and the original 39-task aspirational spec — most of it shouldn't be built until real usage says which pieces matter.
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ OPS ADDENDUM ============ -->
+<section id="ops">
+  <div class="wrap">
+    <span class="eyebrow">07 — Ops Addendum · 30 Jul 2026</span>
+    <h2>Findings since the survey</h2>
+    <p class="section-intro">
+      Operational discoveries made after the 26 Jul survey, while diagnosing and fixing a production login outage on
+      <span class="mono">exploreragents.com/auth</span>. These are facts about the deployed system that no design doc records.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Status</th><th>Finding</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="pill good">Fixed</span></td>
+            <td>Login outage: UI built against a deleted API Gateway</td>
+            <td><span class="mono">tour-planner-ui/.env</span> pointed <span class="mono">VITE_AUTH_BASE_URL</span> at gateway
+              <span class="mono">4q8rnlwz6l</span>, which no longer exists (NXDOMAIN at the authoritative DNS). The live gateway is
+              <span class="mono">5dny4g2ebl</span> (<span class="mono">explorer-agent-api</span>, created 18 Apr 2026, stages
+              <span class="mono">dev</span> + <span class="mono">production</span>). Fixed, rebuilt, redeployed, verified end-to-end
+              against real Cognito responses. The same stale ID was also fixed in both Postman environment files.</td>
+          </tr>
+          <tr>
+            <td><span class="pill warn">Trap</span></td>
+            <td>Cloudflare Pages project mismatch</td>
+            <td><span class="mono">exploreragents.com</span> is served by the Pages project named
+              <span class="mono">exploreragents</span> — <b>not</b> <span class="mono">tour-planner-ui</span>, which the root
+              <span class="mono">Readme.md</span> deploy command targets. Deploying to <span class="mono">tour-planner-ui</span>
+              publishes only to <span class="mono">tour-planner-ui.pages.dev</span> and never touches the live domain.
+              Any deploy instructions or CI pipeline must target <span class="mono">exploreragents</span>.</td>
+          </tr>
+          <tr>
+            <td><span class="pill crit">Open</span></td>
+            <td>Trips and policy APIs still point at the dead gateway</td>
+            <td><span class="mono">VITE_TRIPS_API_URL</span> and <span class="mono">VITE_POLICY_API_URL</span> in
+              <span class="mono">tour-planner-ui/.env</span> still reference <span class="mono">4q8rnlwz6l</span>. The live gateway
+              only exposes <span class="mono">/auth/*</span> and <span class="mono">/v1/{excursions,destinations,bookings}</span> —
+              no trips or policy routes were found on it, so trip-lifecycle and policy features on the live site are presumed
+              broken until their real endpoints are located or redeployed.</td>
+          </tr>
+          <tr>
+            <td><span class="pill warn">Note</span></td>
+            <td>Wrangler v4 requires Node ≥ 22</td>
+            <td>The pinned <span class="mono">wrangler@^4.94.0</span> refuses to run on the deploy host's Node v20.
+              Deploys currently use <span class="mono">npx wrangler@3</span> as a workaround; either upgrade Node on the host
+              or pin wrangler v3 deliberately.</td>
+          </tr>
+          <tr>
+            <td><span class="pill good">Added</span></td>
+            <td>Monorepo docs site</td>
+            <td>A root-level <span class="mono">Dockerfile</span> + <span class="mono">generate.py</span> render every Markdown file
+              across all six workspaces (45 files) into a themed, navigable static site served by nginx
+              (<span class="mono">docker compose up --build</span>, port 8088 — currently running on port 80 on the dev host).
+              <span class="mono">tour-agent-docs</span> was regrouped into <span class="mono">business-model/</span> and
+              <span class="mono">fundraising/</span>, with cross-doc links repaired.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <b>Pattern worth naming:</b> both the login outage and the Pages mismatch are the same failure class — infrastructure was
+      recreated or renamed, and the identifiers baked into config files and docs silently went stale. Nothing in the codebase
+      derives these values from the source of truth (CloudFormation outputs, Cloudflare project bindings). A small
+      post-deploy script that writes <span class="mono">.env</span> from stack outputs would eliminate the class.
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    Compiled from direct inspection of <span class="mono">/opt/tour-planner</span> — <span class="mono">CLAUDE.md</span>, <span class="mono">design.md</span>, <span class="mono">.kiro/specs/</span>, and source across all five code workspaces. Completion figures are relative judgment calls, not a coverage-tool metric.
+  </div>
+</footer>
+<script type="module">
+  // Mermaid rendering (self-hosted pages have no claude.ai runtime).
+  try {
+    const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs");
+    const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+    mermaid.initialize({ startOnLoad: false, theme: dark ? "dark" : "neutral" });
+    await mermaid.run({ querySelector: "pre.mermaid" });
+  } catch (e) { /* offline: styled source text remains visible */ }
+</script>
+<script>
+  // Scroll-spy: highlight the tab for the section in view.
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll("nav.tabs .tab"));
+    var byId = {};
+    tabs.forEach(function (t) { byId[t.getAttribute("href").slice(1)] = t; });
+    var sections = Array.prototype.slice.call(document.querySelectorAll("main section[id]"));
+    function setCurrent(id) {
+      tabs.forEach(function (t) { t.classList.remove("current"); });
+      if (byId[id]) byId[id].classList.add("current");
+    }
+    if ("IntersectionObserver" in window) {
+      var visible = {};
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { visible[en.target.id] = en.isIntersecting; });
+        for (var i = 0; i < sections.length; i++) {
+          if (visible[sections[i].id]) { setCurrent(sections[i].id); break; }
+        }
+      }, { rootMargin: "-40% 0px -55% 0px" });
+      sections.forEach(function (s) { obs.observe(s); });
+    }
+  })();
+</script>
+</body>
+</html>

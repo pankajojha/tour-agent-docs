@@ -1,0 +1,4 @@
+.venv/
+*.html
+# architecture-dossier.html is an authored source document, not a generated export
+!architecture-dossier.html
