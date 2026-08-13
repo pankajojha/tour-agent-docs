@@ -6,8 +6,8 @@ This document translates the revenue model pitch into a 12-15 slide investor dec
 
 Supporting detail remains in:
 
-- [b2c-model.md](b2c-model.md)
-- [b2b-model.md](b2b-model.md)
+- [b2c-model.md](../business-model/b2c-model.md)
+- [b2b-model.md](../business-model/b2b-model.md)
 - [revenue-model-pitch.md](revenue-model-pitch.md)
 
 ---

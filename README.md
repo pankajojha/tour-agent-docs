@@ -2,6 +2,26 @@
 
 This document is the working reference for system architecture, data flow, security boundaries, and collaboration rules confirmed during design discussions.
 
+## Layout
+
+Docs are grouped into folders by business case:
+
+- `README.md` (this file) — architecture reference, stays at the root
+- `architecture-dossier.html` — authored architecture & delivery dossier (workspace completion survey, system map, gap analysis, roadmap, ops addendum); a standalone HTML source document, not a generated export
+- `business-model/` — `b2b-model.md`, `b2c-model.md`, `proactive-spend-controls-blueprint.md`
+- `fundraising/` — `executive-summary.md`, `investor-deck-outline.md`, `revenue-model-pitch.md`
+
+## Viewing These Docs
+
+`*.html` exports are generated on demand from the `*.md` sources (they are gitignored, not committed) and grouped on the index page to match the folder layout above. To render and serve them in a browser, run:
+
+```bash
+cd tour-agent-docs
+docker compose up --build
+```
+
+Then open `http://localhost:8088`. This builds a small container that renders all Markdown files to HTML (`generate.py`) and serves them with nginx. To just render the HTML files locally without serving them, run `python generate.py` from a virtualenv with `Markdown` installed (see `requirements.txt`) — it writes into this directory when `/output` doesn't exist.
+
 ## Scope
 
 This README governs:
